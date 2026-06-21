@@ -14,7 +14,7 @@ deepseek:
   base_url: "https://api.deepseek.com"
 
 schedule:
-  time: "09:00"
+  minute: 0
   timezone: "Asia/Shanghai"
 
 database:

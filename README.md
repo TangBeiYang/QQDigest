@@ -2,13 +2,13 @@
 
 [English](README.md) | [中文](README_ch.md)
 
-Monitor QQ group messages via NapCat, automatically extract valuable information with DeepSeek API daily, and send the digest to a designated QQ account.
+Monitor QQ group messages via NapCat, automatically extract valuable information with DeepSeek API every hour (09:00-23:00), and send the digest to a designated QQ account.
 
 ## Features
 
 - WebSocket connection to NapCat to listen for group messages in real time
 - Persist all messages to local SQLite database
-- Scheduled daily information extraction (configurable time) via DeepSeek API — filters noise, surfaces study/career/technical signals
+- Hourly extraction 09:00-23:00 via DeepSeek API — filters noise, surfaces study/career/technical signals; midnight catch-up at 00:00 covers 23:00-00:00; nightly catch-up at 09:00 covers 00:00-09:00
 - Digest delivered as private message through NapCat HTTP API
 - Automatic reconnection on WebSocket disconnect
 - Fully async (asyncio)
@@ -49,7 +49,7 @@ cp config.example.yaml config.yaml
 python main.py
 ```
 
-The program will start listening immediately and run a summary job once on startup, then daily at the configured time.
+The program starts listening immediately and runs an extraction job once on startup for the past 1 hour, then follows the regular schedule.
 
 ## Configuration
 
@@ -62,7 +62,7 @@ The program will start listening immediately and run a summary job once on start
 | `deepseek.api_key` | DeepSeek API key |
 | `deepseek.model` | Model name (default `deepseek-chat`) |
 | `deepseek.base_url` | API base URL (default `https://api.deepseek.com`) |
-| `schedule.time` | Daily summary time in HH:MM (24h) |
+| `schedule.minute` | Minute of each hour to run (0-59). Jobs: 09:00-23:00 hourly (past 1h), 00:00 (23-24h catch-up), 09:00 (00:00-09:00 night catch-up, past 9h) |
 | `schedule.timezone` | Timezone (default `Asia/Shanghai`) |
 | `database.path` | SQLite file path |
 
@@ -70,7 +70,8 @@ The program will start listening immediately and run a summary job once on start
 
 - `config.yaml` is gitignored — it contains the API key. Use `config.example.yaml` as a template.
 - The database file (`data/messages.db`) is also gitignored.
-- On startup the program runs one summary for the past 24h. This is intentional for testing — remove the call in `main.py` if you only want the scheduled run.
+- Schedule: 09:00-23:00 runs every hour (past 1h of messages); 00:00 covers 23:00-00:00; 09:00 runs a night catch-up covering 00:00-09:00 (past 9h).
+- On startup the program runs one extraction for the past 1 hour. This can be removed in `main.py` if undesired.
 - WebSocket auto-reconnects after 5 seconds on disconnect.
 
 ## Tests
