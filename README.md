@@ -1,13 +1,15 @@
 # QQDigest
 
-Monitor QQ group messages via NapCat, automatically summarize them with DeepSeek API daily, and send the digest to a designated QQ account.
+[English](README.md) | [中文](README_ch.md)
+
+Monitor QQ group messages via NapCat, automatically extract valuable information with DeepSeek API daily, and send the digest to a designated QQ account.
 
 ## Features
 
 - WebSocket connection to NapCat to listen for group messages in real time
 - Persist all messages to local SQLite database
-- Scheduled daily summary (configurable time) via DeepSeek API
-- Summary delivered as private message through NapCat HTTP API
+- Scheduled daily information extraction (configurable time) via DeepSeek API — filters noise, surfaces study/career/technical signals
+- Digest delivered as private message through NapCat HTTP API
 - Automatic reconnection on WebSocket disconnect
 - Fully async (asyncio)
 
@@ -17,7 +19,7 @@ Monitor QQ group messages via NapCat, automatically summarize them with DeepSeek
 main.py          — Entrypoint: wires modules, starts collector & scheduler
 collector.py     — WebSocket client: parses OneBot v11 JSON, stores to DB
 db.py            — SQLite async wrapper: insert / query messages by time range
-summarizer.py    — Calls DeepSeek Chat Completions API with formatted messages
+summarizer.py    — Calls DeepSeek Chat Completions API: extracts high-value info (learning, career, tech) from raw messages
 sender.py        — Sends private message via NapCat HTTP API (send_private_msg)
 config.yaml      — All configuration (group, target QQ, API key, schedule)
 ```

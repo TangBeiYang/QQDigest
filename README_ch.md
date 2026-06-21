@@ -1,13 +1,15 @@
 # QQDigest
 
-通过 NapCat 监听 QQ 群消息，定时调用 DeepSeek API 进行总结，并将摘要私聊发送给指定 QQ。
+[English](README.md) | [中文](README_ch.md)
+
+通过 NapCat 监听 QQ 群消息，定时调用 DeepSeek API 从闲聊中提取有价值信息，并将结果私聊发送给指定 QQ。
 
 ## 功能特性
 
 - 通过 WebSocket 实时监听 NapCat 的群消息事件
 - 所有消息持久化到本地 SQLite 数据库
-- 每日定时（可配置）调用 DeepSeek API 总结过去 24 小时群聊内容
-- 总结结果通过 NapCat HTTP API 以私聊形式发送
+- 每日定时（可配置）调用 DeepSeek API 提取过去 24 小时群聊中的有价值信息（学习、竞赛、技术等内容，过滤闲聊）
+- 提取结果通过 NapCat HTTP API 以私聊形式发送
 - WebSocket 断线自动重连
 - 全程异步（asyncio）
 
@@ -17,7 +19,7 @@
 main.py          — 入口文件，组装各模块，启动 Collector 和定时任务
 collector.py     — WebSocket 客户端，解析 OneBot v11 JSON，存入数据库
 db.py            — SQLite 异步封装，提供插入和按时间范围查询
-summarizer.py    — 调用 DeepSeek Chat Completions API 进行总结
+summarizer.py    — 调用 DeepSeek Chat Completions API，从消息中提取高价值信息（学习、竞赛、技术方向），过滤闲聊
 sender.py        — 通过 NapCat HTTP API 发送私聊消息
 config.yaml      — 配置文件（群号、目标 QQ、API Key、定时时间等）
 ```
